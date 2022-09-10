@@ -3,6 +3,9 @@ import sys
 import requests
 import time
 import discord
+import faker
+import random
+import asyncio
 
 from discord.errors import LoginFailure
 from discord.ext import commands
@@ -12,6 +15,7 @@ from pypresence import Presence
 from utils import console
 from utils import config
 from utils import Notifier
+from utils import scripts
 
 cfg = config.Config()
 cfg.check()
@@ -36,6 +40,10 @@ except:
 for command_file in os.listdir("commands"):
     if command_file.endswith(".py"):
         ghost.load_extension(f"commands.{command_file[:-3]}")
+
+for script_file in os.listdir("scripts"):
+    if script_file.endswith(".py"):
+        scripts.add_script("scripts/" + script_file, globals(), locals())
 
 @ghost.event
 async def on_connect():
