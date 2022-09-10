@@ -16,8 +16,9 @@ from utils import Notifier
 cfg = config.Config()
 cfg.check()
 
-if requests.get("https://discord.com/api/users/@me/settings", headers={"Authorization": cfg.get("token")}).status_code == 200:
-    status = requests.get("https://discord.com/api/users/@me/settings", headers={"Authorization": cfg.get("token")}).json()["status"]
+status_resp = requests.get("https://discord.com/api/users/@me/settings", headers={"Authorization": cfg.get("token")})
+if status_resp.status_code == 200:
+    status = status_resp.json()["status"]
 else:
     status = "online"
 
