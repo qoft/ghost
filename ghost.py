@@ -25,8 +25,13 @@ else:
 rich_presence = Presence("1018195507560063039")
 ghost = commands.Bot(command_prefix=cfg.get("prefix"), self_bot=True, help_command=None, status=discord.Status.try_value(status))
 user = requests.get("https://discord.com/api/users/@me", headers={"Authorization": cfg.get("token")}).json()
+
+try:
+    rich_presence = Presence("1018195507560063039")
 rich_presence.connect()
 rich_presence.update(details=f"Logged in as {user['username']}#{user['discriminator']}", large_image="icon", start=time.time())
+except:
+    console.print_error("Failed to connect to Discord RPC")
 
 for command_file in os.listdir("commands"):
     if command_file.endswith(".py"):
