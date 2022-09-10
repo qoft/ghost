@@ -8,6 +8,7 @@ from discord.ext import commands
 from utils import config
 from utils import codeblock
 from utils import cmdhelper
+from utils import fonts
 
 class Text(commands.Cog):
     def __init__(self, bot):
@@ -51,5 +52,9 @@ class Text(commands.Cog):
     async def ascii_(self, ctx, *, text: str):
         await ctx.send(f"```\n{asciiart.text2art(text)}\n```")
 
+    @commands.command(name="aesthetic", description="Make your text aesthetic.", usage="[text]")
+    async def aesthetic(self, ctx, *, text: str):
+        result = " ".join(list(fonts.bypass(text)))
+        await ctx.send(result)
 def setup(bot):
     bot.add_cog(Text(bot))
