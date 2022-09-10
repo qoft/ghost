@@ -70,5 +70,15 @@ class Text(commands.Cog):
         result = "".join([random.choice([char.upper(), char.lower()]) for char in text])
         await ctx.send(result)
 
+    @commands.command(name="animate", description="Animate your text.", usage="[text]")
+    async def animate(self, ctx, *, text: str):
+        output = ""
+        text = list(text)
+        msg = await ctx.send(text[0])
+        for letter in text:
+            output = output + letter + ""
+            await msg.edit(content=output)
+            await asyncio.sleep(1)
+
 def setup(bot):
     bot.add_cog(Text(bot))
