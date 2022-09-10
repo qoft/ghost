@@ -95,8 +95,8 @@ class Fun(commands.Cog):
 
         return formatted
 
-    @commands.command(name="randomgen", description="randomgen", usage="[name]")
-    async def randomgen(self, ctx, name):
+    @commands.command(name="randomdata", description="Generate random data.", usage="[type]")
+    async def randomdata(self, ctx, type_name: str = "unknown"):
         url = ""
         types = [{"name": "businesscreditcard", "url": "https://random-data-api.com/api/business_credit_card/random_card"},
             {"name": "cryptocoin", "url": "https://random-data-api.com/api/crypto_coin/random_crypto_coin"},
@@ -109,11 +109,15 @@ class Fun(commands.Cog):
             {"name": "apple", "url": "https://random-data-api.com/api/omniauth/apple_get"}]
 
         for _type in types:
-            if name == _type["name"]:
+            if type_name == _type["name"]:
                 url = _type["url"]
                 break
             else:
-                url = "https://random-data-api.com/api/" + name + "/" + "random_" + name
+                url = "unknown"
+
+        if url == "unknown":
+            await ctx.send(str(codeblock.Codeblock("error", extra_title="Unkown data type.", description="The current types are: " + ", ".join([_type["name"] for _type in types]))))
+            return
 
         resp = requests.get(url)
 
@@ -121,7 +125,7 @@ class Fun(commands.Cog):
             data = resp.json()
             formatted = self.get_formatted_items(data)
 
-            msg = codeblock.Codeblock("random gen", extra_title=f"Random {name}", description=formatted, style="yaml")
+            msg = codeblock.Codeblock("random data", extra_title=f"Random {type_name}", description=formatted, style="yaml")
             await ctx.send(str(msg))
         else:
             await ctx.send(str(codeblock.Codeblock("error", extra_title="Failed to get data.")))
