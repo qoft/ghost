@@ -16,12 +16,13 @@ def generate_help_pages(bot, cog):
     spacing = 0
 
     for cmd in commands:
-        prefix = get_command_help(cmd)
+        if cmd.name.lower() != cog.lower():
+            prefix = get_command_help(cmd)
 
-        if len(prefix) > spacing:
-            spacing = len(prefix)
+            if len(prefix) > spacing:
+                spacing = len(prefix)
 
-        commands_2.append([prefix, cmd.description])
+            commands_2.append([prefix, cmd.description])
 
     for cmd in commands_2:
         commands_formatted.append(f"{cmd[0]}{' ' * (spacing - len(cmd[0]))} :: {cmd[1]}")
