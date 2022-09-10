@@ -1,2 +1,0 @@
-# ghost
-The source code™️
