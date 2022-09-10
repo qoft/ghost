@@ -16,9 +16,11 @@ from utils import console
 from utils import config
 from utils import Notifier
 from utils import scripts
+from utils import files
 
 cfg = config.Config()
 cfg.check()
+files.create_defaults()
 
 status_resp = requests.get("https://discord.com/api/users/@me/settings", headers={"Authorization": cfg.get("token")})
 if status_resp.status_code == 200:
