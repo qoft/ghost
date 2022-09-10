@@ -61,5 +61,9 @@ class Text(commands.Cog):
     async def chatbypass(self, ctx, *, text: str):
         await ctx.send(fonts.bypass(text))
 
+    @commands.command(name="regional", description="Make your text out of emojis.", usage="[text]")
+    async def regional(self, ctx, *, text: str):
+        await ctx.send(fonts.regional(text))
+
 def setup(bot):
     bot.add_cog(Text(bot))
