@@ -26,26 +26,6 @@ class Fun(commands.Cog):
 
         await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
-    @commands.command(name="shrug", description="Shrug your arms.", usage="")
-    async def shrug(self, ctx):
-        await ctx.send("¯\_(ツ)_/¯")
-
-    @commands.command(name="tableflip", description="Flip the table.", usage="")
-    async def tableflip(self, ctx):
-        await ctx.send("(╯°□°）╯︵ ┻━┻")
-
-    @commands.command(name="unflip", description="Put the table back.", usage="")
-    async def unflip(self, ctx):
-        await ctx.send("┬─┬ ノ( ゜-゜ノ)")
-
-    @commands.command(name="lmgtfy", description="Let me Google that for you.", usage="[search]", aliases=["letmegooglethatforyou"])
-    async def lmgtfy(self, ctx, *, search):
-        await ctx.send(f"https://lmgtfy.app/?q={search.replace(' ', '+')}")
-
-    @commands.command(name="blank", description="Send a blank message", usage="", aliases=["empty"])
-    async def blank(self, ctx):
-        await ctx.send("** **")
-
     @commands.command(name="rickroll", description="Never gonna give you up.", usage="")
     async def rickroll(self, ctx):
         lyrics = requests.get("https://gist.githubusercontent.com/bentettmar/c8f9a62542174cdfb45499fdf8719723/raw/2f6a8245c64c0ea3249814ad8e016ceac45473e0/rickroll.txt").text    
