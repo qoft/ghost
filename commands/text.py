@@ -65,5 +65,10 @@ class Text(commands.Cog):
     async def regional(self, ctx, *, text: str):
         await ctx.send(fonts.regional(text))
 
+    @commands.command(name="randomcase", description="Make your text random case.", usage="[text]")
+    async def randomcase(self, ctx, *, text: str):
+        result = "".join([random.choice([char.upper(), char.lower()]) for char in text])
+        await ctx.send(result)
+
 def setup(bot):
     bot.add_cog(Text(bot))
