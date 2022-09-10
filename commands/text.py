@@ -2,6 +2,7 @@ import discord
 import requests
 import asyncio
 import random
+import art as asciiart
 
 from discord.ext import commands
 from utils import config
@@ -45,6 +46,10 @@ class Text(commands.Cog):
     @commands.command(name="blank", description="Send a blank message", usage="", aliases=["empty"])
     async def blank(self, ctx):
         await ctx.send("** **")
+
+    @commands.command(name="ascii", description="Create ascii text art from text.", usage="[text]")
+    async def ascii_(self, ctx, *, text: str):
+        await ctx.send(f"```\n{asciiart.text2art(text)}\n```")
 
 def setup(bot):
     bot.add_cog(Text(bot))
