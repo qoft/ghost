@@ -19,7 +19,7 @@ from pypresence import Presence
 
 from utils import console
 from utils import config
-from utils import Notifier
+from utils import notifier
 from utils import scripts
 from utils import files
 
@@ -60,7 +60,7 @@ async def on_connect():
     console.print_info(f"You can now use commands with {cfg.get('prefix')}")
     print()
 
-    Notifier.send("Ghost", f"Logged in as {ghost.user.name}#{ghost.user.discriminator}")
+    notifier.Notifier.send("Ghost", f"Logged in as {ghost.user.name}#{ghost.user.discriminator}")
 
 @ghost.event
 async def on_command(ctx):
