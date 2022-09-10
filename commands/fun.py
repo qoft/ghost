@@ -2,6 +2,8 @@ import discord
 import requests
 import asyncio
 import random
+import faker
+import datetime
 
 from discord.ext import commands
 from utils import config
@@ -12,6 +14,7 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.cfg = config.Config()
+        self.fake = faker.Faker()
 
     @commands.command(name="fun", description="Fun commands.", usage="")
     async def fun(self, ctx, selected_page: int = 1):
@@ -137,6 +140,87 @@ class Fun(commands.Cog):
             await ctx.send(str(msg))
         else:
             await ctx.send(str(codeblock.Codeblock("error", extra_title="Failed to get data.")))
+
+    @commands.command(name="kanye", description="Random kanye quote.", usage="")
+    async def kanye(self, ctx):
+        resp = requests.get("https://api.kanye.rest/")
+        if resp.status_code == 200:
+            data = resp.json()
+            await ctx.send(str(codeblock.Codeblock("kanye", extra_title=data["quote"])))
+        else:
+            await ctx.send(str(codeblock.Codeblock("error", extra_title="Failed to get data.")))
+
+    @commands.command(name="socialcredit", description="Get a user's social credit score.", usage="[user]", aliases=["socialcreditscore", "socialcreditrating", "socialcredits", "socialrating", "socialscore"])
+    async def socialcredit(self, ctx, *, user: discord.User):
+        score = random.randint(-5000000, 10000000)
+        await ctx.send(codeblock.Codeblock("social credit", extra_title=f"{user.name}'s social credit score is {score}."))
+
+    @commands.command(name="dice", description="Roll a dice with a specific side count.", usage="[sides]", aliases=["roll"])
+    async def dice(self, ctx, sides: int = 6):
+        number = random.randint(1, sides)
+        await ctx.send(codeblock.Codeblock(f"{sides} side dice", extra_title=f"You rolled a {number}."))
+
+    @commands.command(name="rainbow", description="Create rainbow text.", usage="[text]", aliases=["rainbowtext"])
+    async def rainbow(self, ctx, *, text: str):
+        colours = {
+            "red": {
+                "codeblock": "diff",
+                "prefix": "-",
+                "suffix": ""
+            },
+            "orange": {
+                "codeblock": "cs",
+                "prefix": "#",
+                "suffix": ""
+            },
+            "yellow": {
+                "codeblock": "fix",
+                "prefix": "",
+                "suffix": ""
+            },
+            "green": {
+                "codeblock": "cs",
+                "prefix": "'",
+                "suffix": "'",
+            },
+            "blue": {
+                "codeblock": "md",
+                "prefix": "#",
+                "suffix": ""
+            }
+        }
+        
+        message = await ctx.send(text)
+
+        for _ in range(3):
+            for colour in colours:
+                colour = colours[colour]
+                await message.edit(content=f"""> ```{colour['codeblock']}\n> {colour['prefix']}{text}{colour['suffix']}```""")
+                await asyncio.sleep(1)
+
+    def calculate_age(self, born):
+        today = datetime.date.today()
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
+    @commands.command(name="dox", description="Dox a user.", usage=["[user]"])
+    async def dox(self, ctx, *, user: discord.User):
+        name = self.fake.name()
+        email = name.lower().split(" ")[0][:random.randint(3, 5)] + "." + name.lower().split(" ")[1] + str(random.randint(10, 99)) + random.choice(["@gmail.com", "@yahoo.com", "@hotmail.com", "@outlook.com"])
+        dob = datetime.date(random.randint(1982, 2010), random.randint(1, 12), random.randint(1, 28))
+        age = self.calculate_age(dob)
+        phone = f"+1 ({random.randint(100, 999)}) {random.randint(100, 999)}-{random.randint(1000, 9999)}"
+
+        address_resp = requests.post("https://randommer.io/random-address", data={"number": "1", "culture": "en_US"}, headers={"content-type": "application/x-www-form-urlencoded; charset=UTF-8", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"})
+        address = address_resp.json()[0]
+
+        await ctx.send(codeblock.Codeblock("dox", extra_title=f"{user.name}'s dox", description=f"""
+Name          :: {name}
+Email         :: {email}
+Date of birth :: {dob.strftime("%d/%m/%Y")}
+Age           :: {age}
+Phone number  :: {phone}
+Address       :: {address}
+"""))
 
 def setup(bot):
     bot.add_cog(Fun(bot))
