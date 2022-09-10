@@ -56,5 +56,10 @@ class Text(commands.Cog):
     async def aesthetic(self, ctx, *, text: str):
         result = " ".join(list(fonts.bypass(text)))
         await ctx.send(result)
+
+    @commands.command(name="chatbypass", description="Bypass chat filters.", aliases=["bypass"], usage="[text]")
+    async def chatbypass(self, ctx, *, text: str):
+        await ctx.send(fonts.bypass(text))
+
 def setup(bot):
     bot.add_cog(Text(bot))
