@@ -32,7 +32,7 @@ class Img(commands.Cog):
 
         await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
-    @commands.command(name="doggo", description="Get a random cat picture.", aliases=["dog", "dogpic"], usage="")
+    @commands.command(name="doggo", description="Get a random dog picture.", aliases=["dog", "dogpic"], usage="")
     async def doggo(self, ctx):
         cfg = config.Config()
         resp = requests.get("https://api.alexflipnote.dev/dogs")
@@ -40,7 +40,7 @@ class Img(commands.Cog):
 
         await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
-    @commands.command(name="bird", description="Get a random cat picture.", aliases=["birb", "birdpic"], usage="")
+    @commands.command(name="bird", description="Get a random bird picture.", aliases=["birb", "birdpic"], usage="")
     async def birb(self, ctx):
         cfg = config.Config()
         resp = requests.get("https://api.alexflipnote.dev/birb")
