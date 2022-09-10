@@ -48,5 +48,13 @@ class Img(commands.Cog):
 
         await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
+    @commands.command(name="fox", description="Get a random fox picture.", aliases=["foxpic"], usage="")
+    async def fox(self, ctx):
+        cfg = config.Config()
+        resp = requests.get("https://randomfox.ca/floof/")
+        image = resp.json()["image"]
+
+        await ctx.send(image, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
 def setup(bot):
     bot.add_cog(Img(bot))
