@@ -33,7 +33,7 @@ class Fun(commands.Cog):
             await ctx.send(line)
             await asyncio.sleep(1)
 
-    @commands.command(name="iq", description="Get the IQ of a user.", usage="[user]")
+    @commands.command(name="iq", description="Get the IQ of a user.", usage="[user]", aliases=["howsmart", "iqrating"])
     async def iq(self, ctx, *, user: discord.User):
         cfg = config.Config()
         iq = random.randint(45, 135)
@@ -45,7 +45,7 @@ class Fun(commands.Cog):
             smart_text = "They're just below average."
         if iq > 50 and iq < 70:
             smart_text = "They might have some issues."
-        else:
+        elif iq < 50:
             smart_text = "They're severely retarded."
 
         msg = codeblock.Codeblock("iq", extra_title=f"{user.name}'s IQ is {iq}. {smart_text}")
@@ -55,7 +55,15 @@ class Fun(commands.Cog):
     async def howgay(self, ctx, *, user: discord.User):
         cfg = config.Config()
         gay_percentage = random.randint(0, 100)
-        msg = codeblock.Codeblock("how gay?", extra_title=f"{user.name} is {gay_percentage}% gay.")
+        msg = codeblock.Codeblock("how gay", extra_title=f"{user.name} is {gay_percentage}% gay.")
+
+        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+    @commands.command(name="howblack", description="Get the blackness of a user.", usage="[user]", aliases=["black", "blackrating"])
+    async def howblack(self, ctx, *, user: discord.User):
+        cfg = config.Config()
+        black_percentage = random.randint(0, 100)
+        msg = codeblock.Codeblock("how black", extra_title=f"{user.name} is {black_percentage}% black.")
 
         await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
