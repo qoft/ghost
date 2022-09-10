@@ -72,21 +72,21 @@ async def on_command(ctx):
     command = ctx.message.content[len(ghost.command_prefix):]
     console.print_cmd(command)
 
-# @ghost.event
-# async def on_command_error(ctx, error):
-#     cfg = config.Config()
+@ghost.event
+async def on_command_error(ctx, error):
+    cfg = config.Config()
 
-#     try:
-#         await ctx.message.delete()
-#     except Exception as e:
-#         console.print_error(str(e))
+    try:
+        await ctx.message.delete()
+    except Exception as e:
+        console.print_error(str(e))
 
-#     try:
-#         await ctx.send(f"```ini\n[ error ] {str(error).lower()}\n```", delete_after=cfg.get("message_settings")["auto_delete_delay"])
-#     except Exception as e:
-#         console.print_error(f"{e}")
+    try:
+        await ctx.send(f"```ini\n[ error ] {str(error).lower()}\n```", delete_after=cfg.get("message_settings")["auto_delete_delay"])
+    except Exception as e:
+        console.print_error(f"{e}")
 
-#     console.print_error(str(error))
+    console.print_error(str(error))
 
 try:
     ghost.run(cfg.get("token"))
