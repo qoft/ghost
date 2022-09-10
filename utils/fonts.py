@@ -57,6 +57,7 @@ regional_indicators = {
 }
 
 def bypass(text):
+    text = text.lower()
     result = ""
     for char in text:
         if char in bypass_fonts:
@@ -66,6 +67,7 @@ def bypass(text):
     return result
 
 def regional(text):
+    text = text.lower()
     result = ""
     for char in text:
         if char in regional_indicators:
