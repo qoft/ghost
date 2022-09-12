@@ -6,3 +6,8 @@ A rewrite of the popular Discord selfbot, Ghost.
 > Make sure you have Python installed.  
 > Download the latest release or the source code.  
 > Run `ghost.py`.  
+
+### Todo list
+> - [ ] Bring command amount to similar amount as old ghost
+> - [ ] Add nitro sniper
+> - [ ] Add giveaway joiner
