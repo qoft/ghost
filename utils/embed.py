@@ -36,6 +36,11 @@ def hex_to_rgb(hex: str) -> tuple:
     hex = hex.lstrip('#')
     return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4)) 
 
+class Field:
+    def __init__(self, name: str, value: str):
+        self.name = name
+        self.value = value
+
 class Embed:
     def __init__(self, title = "", description = "", colour = "#AE00E5", color = ""):
         self.title = title
@@ -43,6 +48,7 @@ class Embed:
         self.footer = ""
         self.thumbnail = ""
         self.image = ""
+        self.fields = []
         self.colour = None
 
         if colour != "": self.colour = colour
@@ -61,6 +67,7 @@ class Embed:
     def set_image(self, url = ""): self.image = url
     def set_footer(self, text = "", icon_url = ""): self.footer = text
     def set_author(self, name = "", icon_url = "", url = ""): pass
+    def add_field(self, name = "", value = "", inline = False): self.fields.append(Field(name, value))
 
     def setup_dimensions(self):
         if self.thumbnail == "": 
@@ -78,6 +85,16 @@ class Embed:
                 wrap = get_wrapped_text(line, self.description_font, self.wrap_width)
                 for _ in wrap:
                     self.height += 60
+
+        if len(self.fields) > 0:
+            for field in self.fields:
+                self.height += 50
+                for line in field.value.splitlines():
+                    wrap = get_wrapped_text(line, self.description_font, self.wrap_width)
+                    for _ in wrap:
+                        self.height += 60
+
+            self.height += 100
 
         if self.footer != "": self.height += 100
         if self.thumbnail != "" and self.height < 400: self.height = 400
@@ -135,6 +152,61 @@ class Embed:
         if self.footer != "":
             draw.text((60, self.height - 100), self.footer, (180, 180, 180), font=self.footer_font)
 
+    def draw_fields(self, template, draw):
+        if len(self.fields) > 0:
+            y_offset = 0
+
+            if self.title != "" and self.description != "":
+                y_offset = 200
+                for line in self.description.splitlines():
+                    wrap = get_wrapped_text(line, self.description_font, self.wrap_width)
+                    for _ in wrap:
+                        y_offset += 60
+                
+                y_offset += 50
+
+            elif self.title != "" and self.description == "":
+                y_offset == 170
+            elif self.title == "" and self.description != "":
+                y_offset = 50
+
+                for line in self.description.splitlines():
+                    wrap = get_wrapped_text(line, self.description_font, self.wrap_width)
+                    for _ in wrap:
+                        y_offset += 60
+
+                y_offset += 50
+
+            for field in self.fields:
+                draw.text((60, y_offset), field.name, (255, 255, 255), font=self.description_font_bold)
+                y_offset += 50
+
+                for field_line in field.value.splitlines():
+                    wrap = get_wrapped_text(field_line, self.description_font, self.wrap_width)
+
+                    for line in wrap:
+                        x_offset = 60
+                        pieces = re.findall(r'(?<=\*\*)(.*)(?=\*\*)', line)
+                        new_line = []
+
+                        for word in line.split("**"):
+                            if word in pieces:
+                                new_line.append(f"**{word}**")
+                            else:
+                                new_line.append(word)
+
+                        for word in new_line:
+                            if word.startswith("**") and word.endswith("**"):
+                                draw.text((x_offset, y_offset), word.replace("**", ""), (255, 255, 255), font=self.description_font_bold)
+                                x_offset += self.description_font_bold.getlength(word.replace("**", ""))
+                            else:
+                                draw.text((x_offset, y_offset), word, (255, 255, 255), font=self.description_font)
+                                x_offset += self.description_font.getlength(word)
+
+                        y_offset += 60
+
+                y_offset += 20
+
     def draw_background(self, template, draw):
         # draw background
         # draw.rounded_rectangle([(0, 0), (self.width - 15, self.height)], 25, fill=hex_to_rgb(self.colour))
@@ -162,6 +234,7 @@ class Embed:
         self.draw_title(template, draw)
         self.draw_thumbnail(template, draw)
         self.draw_description(template, draw)
+        self.draw_fields(template, draw)
         self.draw_footer(template, draw)
 
         return template
@@ -175,7 +248,9 @@ class Embed:
 # if the file is run directly, run the main function
 # this is for testing purposes
 if __name__ == "__main__":
-    embed = Embed(title="epic title", description="super cool image embed generator\ncreated by benny!", colour="#ff0000")
+    embed = Embed(title="epic title", description="testing 123 sdjfhlskdjhflskdjhfsld\nmulti line tesT", colour="#ff0000")
     embed.set_footer(text="this is footer text, pretty cool")
     embed.set_thumbnail(url="https://github.com/GhostSelfbot/Branding/blob/main/ghost.png?raw=true")
+    embed.add_field(name="field 1", value="this is a field")
+    embed.add_field(name="field 2", value="this is a field")
     embed.save()
