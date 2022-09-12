@@ -7,6 +7,7 @@ from utils import config
 from utils import codeblock
 from utils import cmdhelper
 from utils import embed as embedmaker
+from utils import scripts
 
 class General(commands.Cog):
     def __init__(self, bot):
@@ -142,7 +143,65 @@ Usage       :: {cmd_obj.usage}""")
                 await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
                 os.remove(embed_file)
 
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+    @commands.command(name="scripts", description="List all scripts.", usage="")
+    async def scripts_cmd(self, ctx, selected_page: int = 1):
+        cfg = config.Config()
+        scripts_list = scripts.get_scripts()
+
+        if len(scripts_list) == 0:
+            if cfg.get("theme")["style"] == "codeblock":
+                msg = codeblock.Codeblock(title=f"scripts", description=f"No scripts found.")
+                await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+            else:
+                embed = embedmaker.Embed(title="Scripts", description=f"No scripts found.", colour=cfg.get("theme")["colour"])
+                embed.set_footer(text=cfg.get("theme")["footer"])
+                embed_file = embed.save()
+
+                await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+                os.remove(embed_file)
+
+        else:
+            pages = []
+            scripts_str = ""
+            for script in scripts_list:
+                if len(scripts_str) + len(script) > 1000:
+                    pages.append(scripts_str)
+                    scripts_str = ""
+
+                script_in_cmds = False
+                script_name = script.split("/")[-1].replace(".py", "")
+
+                for cmd in self.bot.commands:
+                    if cmd.name == script_name:
+                        script_in_cmds = True
+                        break
+
+                if script_in_cmds:
+                        if cfg.get("theme")["style"] == "codeblock":
+                            scripts_str += f"{cmd.name} :: {cmd.description}\n"
+                        else:
+                            scripts_str += f"**{self.bot.command_prefix}{cmd.name}** {cmd.description}\n" 
+                else:
+                    if cfg.get("theme")["style"] == "codeblock":
+                        scripts_str += f"{script_name} :: Script name not found as a command\n"
+                    else:
+                        scripts_str += f"**{script_name}** Script name not found as a command\n" 
+
+            if len(scripts_str) > 0:
+                pages.append(scripts_str)
+
+            if cfg.get("theme")["style"] == "codeblock":
+                msg = codeblock.Codeblock(title=f"scripts", description=pages[selected_page - 1], extra_title=f"Page {selected_page}/{len(pages)}")
+                await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+            else:
+                embed = embedmaker.Embed(title="Scripts", description=pages[selected_page - 1], colour=cfg.get("theme")["colour"])
+                embed.set_footer(text=f"Page {selected_page}/{len(pages)}")
+                embed_file = embed.save()
+
+                await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+                os.remove(embed_file)
 
 def setup(bot):
     bot.add_cog(General(bot))
