@@ -12,7 +12,11 @@ DEFAULT_CONFIG = {
     },
     "theme": {
         "title": "ghost v3",
-        "emoji": "👻"
+        "emoji": "👻",
+        "image": "https://github.com/GhostSelfbot/Branding/blob/main/ghost.png?raw=true",
+        "colour": "#AE00E5",
+        "footer": "github.com/ghostsb",
+        "style": "codeblock"
     }
 }
 

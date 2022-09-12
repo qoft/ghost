@@ -4,11 +4,14 @@ import asyncio
 import random
 import faker
 import datetime
+import os
 
+from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands
 from utils import config
 from utils import codeblock
 from utils import cmdhelper
+from utils import embed as embedmaker
 
 class Fun(commands.Cog):
     def __init__(self, bot):
@@ -21,13 +24,23 @@ class Fun(commands.Cog):
         cfg = config.Config()
         pages = cmdhelper.generate_help_pages(self.bot, "Fun")
 
-        msg = codeblock.Codeblock(
-            f"{cfg.get('theme')['emoji']} fun commands",
-            description=pages[selected_page - 1],
-            extra_title=f"Page {selected_page}/{len(pages)}"
-        )
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock(
+                f"{cfg.get('theme')['emoji']} fun commands",
+                description=pages["codeblock"][selected_page - 1],
+                extra_title=f"Page {selected_page}/{len(pages['codeblock'])}"
+            )
 
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title="Fun Commands", description=pages["image"][selected_page - 1], colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=f"Page {selected_page}/{len(pages['image'])}")
+            embed.set_thumbnail(url=cfg.get("theme")["image"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="rickroll", description="Never gonna give you up.", usage="")
     async def rickroll(self, ctx):
@@ -51,8 +64,17 @@ class Fun(commands.Cog):
         elif iq < 50:
             smart_text = "They're severely retarded."
 
-        msg = codeblock.Codeblock("iq", extra_title=f"{user.name}'s IQ is {iq}. {smart_text}")
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("iq", extra_title=f"{user.name}'s IQ is {iq}. {smart_text}")
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"{user.name}'s iq", description=f"{user.name}'s IQ is {iq}. {smart_text}", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="howgay", description="Get the gayness of a user.", usage="[user]", aliases=["gay", "gayrating"])
     async def howgay(self, ctx, *, user: discord.User):
@@ -60,24 +82,52 @@ class Fun(commands.Cog):
         gay_percentage = random.randint(0, 100)
         msg = codeblock.Codeblock("how gay", extra_title=f"{user.name} is {gay_percentage}% gay.")
 
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("how gay", extra_title=f"{user.name} is {gay_percentage}% gay.")
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"how gay is {user.name}?!", description=f"{user.name} is {gay_percentage}% gay.", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="howblack", description="Get the blackness of a user.", usage="[user]", aliases=["black", "blackrating"])
     async def howblack(self, ctx, *, user: discord.User):
         cfg = config.Config()
         black_percentage = random.randint(0, 100)
-        msg = codeblock.Codeblock("how black", extra_title=f"{user.name} is {black_percentage}% black.")
 
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("how black", extra_title=f"{user.name} is {black_percentage}% black.")
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"how black is {user.name}?!", description=f"{user.name} is {black_percentage}% black.", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="pp", description="Get the size of a user's dick.", usage="[user]", aliases=["dick", "dicksize", "penis"])
     async def pp(self, ctx, *, user: discord.User):
         cfg = config.Config()
         penis = "8" + ("=" * random.randint(0, 12)) + "D"
         inches = str(len(penis)) + "\""
-        msg = codeblock.Codeblock("pp", extra_title=f"{user.name} has a {inches} dick.", description=penis)
 
-        await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("pp", extra_title=f"{user.name} has a {inches} dick.", description=penis)
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"{user.name}'s dick size", description=f"{user.name} has a {inches} dick.\n{penis}", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="blocksend", description="Send a message to a blocked user.", usage="[user] [message]")
     async def blocksend(self, ctx, user: discord.User, *, message: str):
@@ -87,9 +137,17 @@ class Fun(commands.Cog):
         await user.send(message)
         await user.block()
 
-        msg = codeblock.Codeblock("block send", extra_title=f"Sent a message to {user.name} ({user.id})", description=f"Message :: {message}")
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("block send", extra_title=f"Sent a message to {user.name} ({user.id})", description=f"Message :: {message}")
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
-        await ctx.send(msg, delete_after=self.cfg.get("message_settings")["auto_delete_delay"])
+        else:
+            embed = embedmaker.Embed(title=f"block send", description=f"Sent a message to {user.name} ({user.id}).\n**Message:** {message}", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     def get_formatted_items(self, json_obj, tabs=0):
         formatted = ""
@@ -143,52 +201,78 @@ class Fun(commands.Cog):
 
     @commands.command(name="kanye", description="Random kanye quote.", usage="")
     async def kanye(self, ctx):
+        cfg = config.Config()
         resp = requests.get("https://api.kanye.rest/")
+
         if resp.status_code == 200:
             data = resp.json()
-            await ctx.send(str(codeblock.Codeblock("kanye", extra_title=data["quote"])))
+
+            if cfg.get("theme")["style"] == "codeblock":
+                msg = codeblock.Codeblock("kanye", extra_title=data["quote"])
+                await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+            else:
+                embed = embedmaker.Embed(title=f"Kanye Quote", description=data["quote"], colour=cfg.get("theme")["colour"])
+                embed.set_footer(text=cfg.get("theme")["footer"])
+                embed_file = embed.save()
+
+                await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+                os.remove(embed_file)
+
         else:
-            await ctx.send(str(codeblock.Codeblock("error", extra_title="Failed to get data.")))
+            if cfg.get("theme")["style"] == "codeblock":
+                msg = codeblock.Codeblock("error", extra_title="Failed to get data.")
+                await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+            else:
+                embed = embedmaker.Embed(title=f"Error", description="Failed to get data.", colour=cfg.get("theme")["colour"])
+                embed.set_footer(text=cfg.get("theme")["footer"])
+                embed_file = embed.save()
+
+                await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+                os.remove(embed_file)
 
     @commands.command(name="socialcredit", description="Get a user's social credit score.", usage="[user]", aliases=["socialcreditscore", "socialcreditrating", "socialcredits", "socialrating", "socialscore"])
     async def socialcredit(self, ctx, *, user: discord.User):
+        cfg = config.Config()
         score = random.randint(-5000000, 10000000)
-        await ctx.send(codeblock.Codeblock("social credit", extra_title=f"{user.name}'s social credit score is {score}."))
+
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("social credit", extra_title=f"{user.name}'s social credit score is {score}.")
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"Social Credit", description=f"{user.name}'s social credit score is {score}.", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="dice", description="Roll a dice with a specific side count.", usage="[sides]", aliases=["roll"])
     async def dice(self, ctx, sides: int = 6):
+        cfg = config.Config()
         number = random.randint(1, sides)
-        await ctx.send(codeblock.Codeblock(f"{sides} side dice", extra_title=f"You rolled a {number}."))
+
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock(f"{sides} side dice", extra_title=f"You rolled a {number}.")
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"{sides} side dice", description=f"You rolled a {number}.", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
 
     @commands.command(name="rainbow", description="Create rainbow text.", usage="[text]", aliases=["rainbowtext"])
     async def rainbow(self, ctx, *, text: str):
-        colours = {
-            "red": {
-                "codeblock": "diff",
-                "prefix": "-",
-                "suffix": ""
-            },
-            "orange": {
-                "codeblock": "cs",
-                "prefix": "#",
-                "suffix": ""
-            },
-            "yellow": {
-                "codeblock": "fix",
-                "prefix": "",
-                "suffix": ""
-            },
-            "green": {
-                "codeblock": "cs",
-                "prefix": "'",
-                "suffix": "'",
-            },
-            "blue": {
-                "codeblock": "md",
-                "prefix": "#",
-                "suffix": ""
-            }
-        }
+        colours = {"red": {"codeblock": "diff", "prefix": "-", "suffix": ""},
+            "orange": {"codeblock": "cs", "prefix": "#", "suffix": ""},
+            "yellow": {"codeblock": "fix", "prefix": "", "suffix": ""},
+            "green": {"codeblock": "cs", "prefix": "'", "suffix": "'",},
+            "blue": {"codeblock": "md", "prefix": "#", "suffix": ""}}
         
         message = await ctx.send(text)
 
@@ -204,6 +288,8 @@ class Fun(commands.Cog):
 
     @commands.command(name="dox", description="Dox a user.", usage=["[user]"])
     async def dox(self, ctx, *, user: discord.User):
+        cfg = config.Config()
+
         name = self.fake.name()
         email = name.lower().split(" ")[0][:random.randint(3, 5)] + "." + name.lower().split(" ")[1] + str(random.randint(10, 99)) + random.choice(["@gmail.com", "@yahoo.com", "@hotmail.com", "@outlook.com"])
         dob = datetime.date(random.randint(1982, 2010), random.randint(1, 12), random.randint(1, 28))
@@ -212,15 +298,48 @@ class Fun(commands.Cog):
 
         address_resp = requests.post("https://randommer.io/random-address", data={"number": "1", "culture": "en_US"}, headers={"content-type": "application/x-www-form-urlencoded; charset=UTF-8", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"})
         address = address_resp.json()[0]
-
-        await ctx.send(codeblock.Codeblock("dox", extra_title=f"{user.name}'s dox", description=f"""
-Name          :: {name}
+        
+        if cfg.get("theme")["style"] == "codeblock":
+            msg = codeblock.Codeblock("dox", extra_title=f"{user.name}'s dox", description=f"""Name          :: {name}
 Email         :: {email}
 Date of birth :: {dob.strftime("%d/%m/%Y")}
 Age           :: {age}
 Phone number  :: {phone}
 Address       :: {address}
-"""))
+""")
+
+            await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
+
+        else:
+            embed = embedmaker.Embed(title=f"{user.name}'s dox", description=f"""**Name:** {name}
+**Email:** {email}
+**Date of birth:** {dob.strftime("%d/%m/%Y")}
+**Age:** {age}
+**Phone number:** {phone}
+**Address:** {address}
+""", colour=cfg.get("theme")["colour"])
+            embed.set_footer(text=cfg.get("theme")["footer"])
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
+
+
+    @commands.command(name="creditcard", description="Generate a users credit card.", usage="[user]", aliases=["cc"])
+    async def creditcard(self, ctx, *, user: discord.User):
+        card_number = random.randint(1000000000000000, 9999999999999999)
+        card_number = " ".join([str(card_number)[i:i+4] for i in range(0, len(str(card_number)), 4)])
+
+        background = Image.open("data/cc-template.png")
+        draw = ImageDraw.Draw(background)
+
+        draw.text((100, 340), user.name, (255, 255, 255), font=ImageFont.truetype("data/fonts/comicsans.ttf", 36), stroke_width=8, stroke_fill=(207, 131, 0))
+        draw.text((100, 250), card_number, (255, 255, 255), font=ImageFont.truetype("data/fonts/comicsans.ttf", 50), stroke_width=8, stroke_fill=(207, 131, 0))
+
+        background.save("cc-edited.png")
+
+        await ctx.send(file=discord.File("cc-edited.png"))
+        os.remove("cc-edited.png")
 
 def setup(bot):
     bot.add_cog(Fun(bot))

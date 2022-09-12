@@ -22,6 +22,8 @@ from utils import config
 from utils import notifier
 from utils import scripts
 from utils import files
+from utils import codeblock
+from utils import embed as embedmaker
 
 cfg = config.Config()
 cfg.check()
@@ -82,7 +84,15 @@ async def on_command_error(ctx, error):
         console.print_error(str(e))
 
     try:
-        await ctx.send(f"```ini\n[ error ] {str(error).lower()}\n```", delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        if cfg.get("theme")["style"] == "codeblock":
+            await ctx.send(f"```ini\n[ error ] {str(error).lower()}\n```", delete_after=cfg.get("message_settings")["auto_delete_delay"])
+        else:
+            embed = embedmaker.Embed(title="Error", description=f"{str(error).lower()}")
+            embed_file = embed.save()
+
+            await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
+            os.remove(embed_file)
+
     except Exception as e:
         console.print_error(f"{e}")
 
