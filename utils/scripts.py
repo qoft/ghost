@@ -1,6 +1,6 @@
 import os
 import codecs
-from typing import Any
+from typing import Any, Mapping
 
 script_list = []
 
