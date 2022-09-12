@@ -80,25 +80,11 @@ class Embed:
         self.width = 1500
         self.wrap_width = self.width - 450
 
-<<<<<<< HEAD
     def set_thumbnail(self, url = ""): self.thumbnail = url
     def set_image(self, url = ""): self.image = url
     def set_footer(self, text = "", icon_url = ""): self.footer = text
     def set_author(self, name = "", icon_url = "", url = ""): pass
     def add_field(self, name = "", value = "", inline = False): self.fields.append(Field(name, value))
-=======
-    def set_thumbnail(self, url=""):
-        self.thumbnail = url
-
-    def set_image(self, url=""):
-        self.image = url
-
-    def set_footer(self, text="", icon_url=""):
-        self.footer = text
-
-    def set_author(self, name="", icon_url="", url=""):
-        pass
->>>>>>> 787bc46ce68bf11ec070aa6cc5043ed19cc4022e
 
     def setup_dimensions(self):
         if self.thumbnail == "":
@@ -285,17 +271,9 @@ class Embed:
 # if the file is run directly, run the main function
 # this is for testing purposes
 if __name__ == "__main__":
-<<<<<<< HEAD
     embed = Embed(title="epic title", description="testing 123 sdjfhlskdjhflskdjhfsld\nmulti line tesT", colour="#ff0000")
     embed.set_footer(text="this is footer text, pretty cool")
     embed.set_thumbnail(url="https://github.com/GhostSelfbot/Branding/blob/main/ghost.png?raw=true")
     embed.add_field(name="field 1", value="this is a field")
     embed.add_field(name="field 2", value="this is a field")
     embed.save()
-=======
-    embed = Embed(title="epic title", description="super cool image embed generator\ncreated by benny!",
-                  colour="#ff0000")
-    embed.set_footer(text="this is footer text, pretty cool")
-    embed.set_thumbnail(url="https://github.com/GhostSelfbot/Branding/blob/main/ghost.png?raw=true")
-    embed.save()
->>>>>>> 787bc46ce68bf11ec070aa6cc5043ed19cc4022e
