@@ -5,21 +5,34 @@ import re
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
+
 def rounded_rectangle(self: ImageDraw, xy, corner_radius, fill=None, outline=None):
     """Draw a rounded rectangle.
     Taken from a stackoverflow post somehwere"""
     upper_left_point = xy[0]
     bottom_right_point = xy[1]
-    self.rectangle([(upper_left_point[0], upper_left_point[1] + corner_radius), (bottom_right_point[0], bottom_right_point[1] - corner_radius)], fill=fill, outline=outline)
-    self.rectangle([(upper_left_point[0] + corner_radius, upper_left_point[1]), (bottom_right_point[0] - corner_radius, bottom_right_point[1])], fill=fill, outline=outline)
-    self.pieslice([upper_left_point, (upper_left_point[0] + corner_radius * 2, upper_left_point[1] + corner_radius * 2)],180, 270, fill=fill, outline=outline)
-    self.pieslice([(bottom_right_point[0] - corner_radius * 2, bottom_right_point[1] - corner_radius * 2), bottom_right_point],0, 90, fill=fill, outline=outline)
-    self.pieslice([(upper_left_point[0], bottom_right_point[1] - corner_radius * 2), (upper_left_point[0] + corner_radius * 2, bottom_right_point[1])],90, 180, fill=fill, outline=outline)
-    self.pieslice([(bottom_right_point[0] - corner_radius * 2, upper_left_point[1]), (bottom_right_point[0], upper_left_point[1] + corner_radius * 2)], 270, 360, fill=fill, outline=outline)
+    self.rectangle([(upper_left_point[0], upper_left_point[1] + corner_radius),
+                    (bottom_right_point[0], bottom_right_point[1] - corner_radius)], fill=fill, outline=outline)
+    self.rectangle([(upper_left_point[0] + corner_radius, upper_left_point[1]),
+                    (bottom_right_point[0] - corner_radius, bottom_right_point[1])], fill=fill, outline=outline)
+    self.pieslice(
+        [upper_left_point, (upper_left_point[0] + corner_radius * 2, upper_left_point[1] + corner_radius * 2)], 180,
+        270, fill=fill, outline=outline)
+    self.pieslice(
+        [(bottom_right_point[0] - corner_radius * 2, bottom_right_point[1] - corner_radius * 2), bottom_right_point], 0,
+        90, fill=fill, outline=outline)
+    self.pieslice([(upper_left_point[0], bottom_right_point[1] - corner_radius * 2),
+                   (upper_left_point[0] + corner_radius * 2, bottom_right_point[1])], 90, 180, fill=fill,
+                  outline=outline)
+    self.pieslice([(bottom_right_point[0] - corner_radius * 2, upper_left_point[1]),
+                   (bottom_right_point[0], upper_left_point[1] + corner_radius * 2)], 270, 360, fill=fill,
+                  outline=outline)
+
 
 ImageDraw.rounded_rectangle = rounded_rectangle
 
-def get_wrapped_text(text: str, font: ImageFont.ImageFont, line_length: int):
+
+def get_wrapped_text(text: str, font: ImageFont, line_length: int):
     """Wrap text to a certain length.
     Taken from a stackoverflow post somewhere"""
     lines = ['']
@@ -31,13 +44,15 @@ def get_wrapped_text(text: str, font: ImageFont.ImageFont, line_length: int):
 
     return lines
 
+
 def hex_to_rgb(hex: str) -> tuple:
     """Convert a hex colour to RGB."""
     hex = hex.lstrip('#')
-    return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4)) 
+    return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
+
 
 class Embed:
-    def __init__(self, title = "", description = "", colour = "#AE00E5", color = ""):
+    def __init__(self, title="", description="", colour="#AE00E5", color=""):
         self.title = title
         self.description = description.replace("`", "")
         self.footer = ""
@@ -45,9 +60,11 @@ class Embed:
         self.image = ""
         self.colour = None
 
-        if colour != "": self.colour = colour
-        elif color != "": self.colour = color # for the americans
-        
+        if colour != "":
+            self.colour = colour
+        elif color != "":
+            self.colour = color  # for the americans
+
         self.title_font = ImageFont.truetype("data/fonts/Roboto-Bold.ttf", 70)
         self.description_font = ImageFont.truetype("data/fonts/Roboto-Regular.ttf", 54)
         self.description_font_bold = ImageFont.truetype("data/fonts/Roboto-Bold.ttf", 54)
@@ -57,13 +74,20 @@ class Embed:
         self.width = 1500
         self.wrap_width = self.width - 450
 
-    def set_thumbnail(self, url = ""): self.thumbnail = url
-    def set_image(self, url = ""): self.image = url
-    def set_footer(self, text = "", icon_url = ""): self.footer = text
-    def set_author(self, name = "", icon_url = "", url = ""): pass
+    def set_thumbnail(self, url=""):
+        self.thumbnail = url
+
+    def set_image(self, url=""):
+        self.image = url
+
+    def set_footer(self, text="", icon_url=""):
+        self.footer = text
+
+    def set_author(self, name="", icon_url="", url=""):
+        pass
 
     def setup_dimensions(self):
-        if self.thumbnail == "": 
+        if self.thumbnail == "":
             self.wrap_width = self.width - 150
 
         if self.title != "" and self.description != "":
@@ -86,13 +110,15 @@ class Embed:
         if self.title != "":
             if self.thumbnail != "":
                 title_bg_img = Image.new("RGBA", (self.width - 300 - 40 - 40 - 40, 135), (0, 0, 0, 0))
-                ImageDraw.Draw(title_bg_img).rounded_rectangle([(0, 0), (title_bg_img.width, title_bg_img.height)], 20, fill=(0, 0, 0, 50))
+                ImageDraw.Draw(title_bg_img).rounded_rectangle([(0, 0), (title_bg_img.width, title_bg_img.height)], 20,
+                                                               fill=(0, 0, 0, 50))
                 template.alpha_composite(title_bg_img, (40, 40))
             else:
                 title_bg_img = Image.new("RGBA", (self.width - 45 - 40, 135), (0, 0, 0, 0))
-                ImageDraw.Draw(title_bg_img).rounded_rectangle([(0, 0), (title_bg_img.width, title_bg_img.height)], 20, fill=(0, 0, 0, 50))
+                ImageDraw.Draw(title_bg_img).rounded_rectangle([(0, 0), (title_bg_img.width, title_bg_img.height)], 20,
+                                                               fill=(0, 0, 0, 50))
                 template.alpha_composite(title_bg_img, (40, 40))
-            
+
             draw.text((70, 62), self.title, (255, 255, 255), font=self.title_font)
 
     def draw_thumbnail(self, template, draw):
@@ -123,7 +149,8 @@ class Embed:
 
                     for word in new_line:
                         if word.startswith("**") and word.endswith("**"):
-                            draw.text((x_offset, y_offset), word.replace("**", ""), (255, 255, 255), font=self.description_font_bold)
+                            draw.text((x_offset, y_offset), word.replace("**", ""), (255, 255, 255),
+                                      font=self.description_font_bold)
                             x_offset += self.description_font_bold.getlength(word.replace("**", ""))
                         else:
                             draw.text((x_offset, y_offset), word, (255, 255, 255), font=self.description_font)
@@ -141,7 +168,9 @@ class Embed:
         # draw.rounded_rectangle([(10, 0), (self.width - 10, self.height)], 25, fill=(30, 30, 30, 255))
 
         waves = Image.open("data/waves.png").convert("RGBA")
-        template.paste(waves, (int(self.width / 2) - int(waves.width / 2), int(self.height / 2) - int(waves.height / 1.5)), waves)
+        template.paste(waves,
+                       (int(self.width / 2) - int(waves.width / 2), int(self.height / 2) - int(waves.height / 1.5)),
+                       waves)
 
         # draw background image
         # background = Image.open("data/background.png").convert("RGBA")
@@ -154,7 +183,7 @@ class Embed:
 
     def draw(self):
         self.setup_dimensions()
-        
+
         template = Image.new("RGBA", (self.width, self.height), (30, 30, 30, 255))
         draw = ImageDraw.Draw(template)
 
@@ -167,15 +196,17 @@ class Embed:
         return template
 
     def save(self):
-        path = f"embed-{random.randint(1000, 9999)}.png" # comment this out if youre running the script directly
+        path = f"embed-{random.randint(1000, 9999)}.png"  # comment this out if youre running the script directly
         # path = "embed.png" # uncomment this if youre running the script directly
         self.draw().save(path)
         return path
 
+
 # if the file is run directly, run the main function
 # this is for testing purposes
 if __name__ == "__main__":
-    embed = Embed(title="epic title", description="super cool image embed generator\ncreated by benny!", colour="#ff0000")
+    embed = Embed(title="epic title", description="super cool image embed generator\ncreated by benny!",
+                  colour="#ff0000")
     embed.set_footer(text="this is footer text, pretty cool")
     embed.set_thumbnail(url="https://github.com/GhostSelfbot/Branding/blob/main/ghost.png?raw=true")
     embed.save()
