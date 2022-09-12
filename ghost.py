@@ -35,7 +35,13 @@ if status_resp.status_code == 200:
 else:
     status = "online"
 
-ghost = commands.Bot(command_prefix=cfg.get("prefix"), self_bot=True, help_command=None, status=discord.Status.try_value(status))
+ghost = commands.Bot(
+    command_prefix=cfg.get("prefix"),
+    self_bot=True,
+    help_command=None,
+    status=discord.Status.try_value(status)
+)
+
 user = requests.get("https://discord.com/api/users/@me", headers={"Authorization": cfg.get("token")}).json()
 
 try:
@@ -105,5 +111,4 @@ except LoginFailure:
     new_token = input("> ")
     cfg.set("token", new_token)
     cfg.save()
-
     os.execl(sys.executable, sys.executable, *sys.argv)

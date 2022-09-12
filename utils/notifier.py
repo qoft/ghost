@@ -6,7 +6,7 @@ class Notifier:
         pass
 
     @staticmethod
-    def send(title, text) -> None:
+    def send(title: str, text :str) -> None:
         if sys.platform == "win32":
             # TODO: add notifs for windows
             pass

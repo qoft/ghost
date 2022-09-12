@@ -1,9 +1,11 @@
-import discord
 import os
 
+import discord
+
 from . import codeblock
-from . import embed
 from . import config
+from . import embed
+
 
 def get_command_help(cmd):
     prefix = ""
@@ -12,8 +14,9 @@ def get_command_help(cmd):
         prefix = f"{cmd.parent.name} {cmd.name}"
     else:
         prefix = f"{cmd.name}"
-    
+
     return prefix
+
 
 def generate_help_pages(bot, cog):
     pages = []
@@ -61,7 +64,8 @@ def generate_help_pages(bot, cog):
 
     return {"codeblock": pages_2, "image": pages}
 
-async def send_message(ctx, discord_embed: discord.Embed, extra_title = ""):
+
+async def send_message(ctx, discord_embed: discord.Embed, extra_title=""):
     cfg = config.Config()
     description = discord_embed.description
     title = discord_embed.title

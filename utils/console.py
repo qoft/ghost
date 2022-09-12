@@ -1,5 +1,5 @@
 import colorama
-import os, sys
+import os, sys, pystyle
 
 from . import config
 
@@ -28,8 +28,9 @@ def print_banner():
 
     print(f"{colorama.Fore.LIGHTBLUE_EX}{colorama.Style.BRIGHT}")
 
-    for line in banner.splitlines():
-        print(f"{line}".center(os.get_terminal_size().columns))
+    print(pystyle.Center.XCenter(banner))
+    # for line in banner.splitlines():
+    #     print(f"{line}".center(os.get_terminal_size().columns))
     
     print()
     print(f"—————————————————————————————————————{copyright_}—————————————————————————————————————")
