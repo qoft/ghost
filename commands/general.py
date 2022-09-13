@@ -23,7 +23,8 @@ img  :: Image commands
 info :: Information commands
 mod  :: Moderation commands
 util :: Utility commands
-text :: Text commands""")
+text :: Text commands
+nsfw :: NSFW commands""")
 
                 await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
