@@ -1,11 +1,23 @@
 import os
-
 import discord
 
 from . import codeblock
 from . import config
 from . import embed
 
+class CommandCategory:
+    def __init__(self, bot, name, description):
+        self.bot = bot
+        self.name = name
+        self.description = description
+
+    def __str__(self):
+        cfg = config.Config()
+
+        if cfg.get("theme")["style"] == "codeblock":
+            return f"{self.name} :: {self.description}"
+        else:
+            return f"**{self.bot.command_prefix}{self.name}** {self.description}"
 
 def get_command_help(cmd):
     prefix = ""
@@ -16,7 +28,6 @@ def get_command_help(cmd):
         prefix = f"{cmd.name}"
 
     return prefix
-
 
 def generate_help_pages(bot, cog):
     pages = []
@@ -63,7 +74,6 @@ def generate_help_pages(bot, cog):
         pages_2.append(commands_str)
 
     return {"codeblock": pages_2, "image": pages}
-
 
 async def send_message(ctx, discord_embed: discord.Embed, extra_title=""):
     cfg = config.Config()

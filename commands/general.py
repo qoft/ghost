@@ -16,34 +16,35 @@ class General(commands.Cog):
     @commands.command(name="help", description="A list of all categories.", usage="")
     async def help(self, ctx, command: str = None):
         cfg = config.Config()
+
+        description = ""
+        categories = [
+            cmdhelper.CommandCategory(self.bot, "fun", "Fun commands"),
+            cmdhelper.CommandCategory(self.bot, "text", "Text commands"),
+            cmdhelper.CommandCategory(self.bot, "img", "Image commands"),
+            cmdhelper.CommandCategory(self.bot, "mod", "Moderation commands"),
+            cmdhelper.CommandCategory(self.bot, "util", "Utility commands"),
+            cmdhelper.CommandCategory(self.bot, "nsfw", "NSFW commands"),
+        ]
+
+        for category in categories:
+            description += f"{category}\n"
+
         if command is None:
             if cfg.get("theme")["style"] == "codeblock":
-                msg = codeblock.Codeblock(f"{cfg.get('theme')['emoji']} {cfg.get('theme')['title']}", f"""fun  :: Fun commands
-img  :: Image commands
-info :: Information commands
-mod  :: Moderation commands
-util :: Utility commands
-text :: Text commands
-nsfw :: NSFW commands""")
+                msg = codeblock.Codeblock(f"{cfg.get('theme')['emoji']} {cfg.get('theme')['title']}", description)
 
                 await ctx.send(msg, delete_after=cfg.get("message_settings")["auto_delete_delay"])
 
             else:
-                embed = embedmaker.Embed(title=cfg.get('theme')['title'], description=f"""**{self.bot.command_prefix}fun** Fun commands
-**{self.bot.command_prefix}img** Image commands
-**{self.bot.command_prefix}info** Information commands
-**{self.bot.command_prefix}mod** Moderation commands
-**{self.bot.command_prefix}util** Utility commands
-**{self.bot.command_prefix}text** Text commands
-**{self.bot.command_prefix}nsfw** NSFW commands
-
-There are **{len(self.bot.commands)}** commands!""", colour=cfg.get("theme")["colour"])
+                embed = embedmaker.Embed(title=cfg.get('theme')['title'], description=f"{description}\nThere are **{len(self.bot.commands)}** commands!", colour=cfg.get("theme")["colour"])
                 embed.set_footer(text=cfg.get("theme")["footer"])
                 embed.set_thumbnail(url=cfg.get("theme")["image"])
                 embed_file = embed.save()
 
                 await ctx.send(file=discord.File(embed_file, filename="embed.png"), delete_after=cfg.get("message_settings")["auto_delete_delay"])
                 os.remove(embed_file)
+
         else:
             cmd_obj = self.bot.get_command(command)
             if cmd_obj is None:
