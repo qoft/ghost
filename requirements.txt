@@ -5,3 +5,4 @@ Faker
 pypresence
 requests
 pillow
+pystyle
