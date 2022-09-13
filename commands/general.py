@@ -35,6 +35,7 @@ nsfw :: NSFW commands""")
 **{self.bot.command_prefix}mod** Moderation commands
 **{self.bot.command_prefix}util** Utility commands
 **{self.bot.command_prefix}text** Text commands
+**{self.bot.command_prefix}nsfw** NSFW commands
 
 There are **{len(self.bot.commands)}** commands!""", colour=cfg.get("theme")["colour"])
                 embed.set_footer(text=cfg.get("theme")["footer"])
