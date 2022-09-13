@@ -13,6 +13,7 @@ from utils import embed as embedmaker
 class NSFW(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("nsfw", "NSFW commands")
         self.cfg = config.Config()
 
     @commands.command(name="nsfw", description="NSFW commands.", aliases=["notsafeforwork"], usage="")

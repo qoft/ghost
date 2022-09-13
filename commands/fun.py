@@ -14,10 +14,12 @@ from utils import cmdhelper
 from utils import embed as embedmaker
 
 class Fun(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
         self.cfg = config.Config()
         self.fake = faker.Faker()
+        self.description = cmdhelper.cog_desc("fun", "Fun commands")
 
     @commands.command(name="fun", description="Fun commands.", usage="")
     async def fun(self, ctx, selected_page: int = 1):

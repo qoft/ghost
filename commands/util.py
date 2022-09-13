@@ -11,6 +11,7 @@ from utils import embed as embedmaker
 class Util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("util", "Utility commands")
         self.cfg = config.Config()
 
     @commands.command(name="util", description="Utility commands.", aliases=["utilities", "utility", "utils"], usage="")

@@ -15,6 +15,7 @@ from utils import embed as embedmaker
 class Text(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("text", "Text commands")
         self.cfg = config.Config()
 
     @commands.command(name="text", description="Text commands.", usage="")

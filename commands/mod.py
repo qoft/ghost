@@ -10,6 +10,7 @@ from utils import embed as embedmaker
 class Mod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("mod", "Moderation commands")
         self.cfg = config.Config()
 
     @commands.command(name="mod", description="Moderation commands.", aliases=["moderation"], usage="")

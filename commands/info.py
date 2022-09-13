@@ -11,6 +11,7 @@ from utils import embed as embedmaker
 class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("info", "Info commands")
         self.cfg = config.Config()
 
     @commands.command(name="info", description="Information commands.", aliases=["information"], usage="")

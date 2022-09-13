@@ -12,6 +12,7 @@ from utils import embed as embedmaker
 class Img(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("img", "Image commands")
         self.cfg = config.Config()
 
     @commands.command(name="img", description="Image commands.", aliases=["image"], usage="")

@@ -12,23 +12,25 @@ from utils import scripts
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.description = cmdhelper.cog_desc("help", "Get help with a command")
 
     @commands.command(name="help", description="A list of all categories.", usage="")
     async def help(self, ctx, command: str = None):
         cfg = config.Config()
-
         description = ""
-        categories = [
-            cmdhelper.CommandCategory(self.bot, "fun", "Fun commands"),
-            cmdhelper.CommandCategory(self.bot, "text", "Text commands"),
-            cmdhelper.CommandCategory(self.bot, "img", "Image commands"),
-            cmdhelper.CommandCategory(self.bot, "mod", "Moderation commands"),
-            cmdhelper.CommandCategory(self.bot, "util", "Utility commands"),
-            cmdhelper.CommandCategory(self.bot, "nsfw", "NSFW commands"),
-        ]
 
-        for category in categories:
-            description += f"{category}\n"
+        for cog_name in self.bot.cogs:
+            cog = self.bot.get_cog(cog_name)
+
+            if cog.description is not None:
+                desc = cog.description.split("\n")[0]
+                cmd_name = cog.description.split("\n")[1]
+
+                if cog_name.lower() != "general":
+                    if cfg.get("theme")["style"] == "codeblock":
+                        description += f"{cmd_name} :: {desc}\n"
+                    else:
+                        description += f"**{self.bot.command_prefix}{cmd_name}** {desc}\n"
 
         if command is None:
             if cfg.get("theme")["style"] == "codeblock":
